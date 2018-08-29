@@ -101,7 +101,21 @@ public class Tile {
         int drawX = width /2 - DrawUtils.getMessageWidth(""+value,font,g)/2;
         int drawY = height /2 - DrawUtils.getMessageHeight(""+ value,font ,g )/2;
         g.drawString(""+ value,drawX,drawY);
+        g.dispose();
+    }
+    public void update(){
 
     }
+
+    public void render(Graphics2D g ){
+        g.drawImage(tileImage,x,y,null);
+    }
+    public int getValue(){
+        return value;
+    }
 }
+
+
+
+
 
