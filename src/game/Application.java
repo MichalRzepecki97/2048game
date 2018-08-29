@@ -2,7 +2,7 @@ package game;
 
 import javax.swing.*;
 
-public class Application {
+public class Application  {
     public static void main(String[] args) {
         Game game = new Game();
         JFrame window = new JFrame("2048 ");

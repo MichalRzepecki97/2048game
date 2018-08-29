@@ -15,7 +15,8 @@ public class Game extends JPanel implements KeyListener, Runnable {
     public static final Font main = new Font("Babes Neue Regular", Font.PLAIN,28);
     private static Thread game;
     private static boolean running;
-    private BufferedImage image = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);// obczaj
+    private BufferedImage image = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);// obcza
+    private GameBoard board;
 
     private long startTime;
     private long elapsed;
@@ -25,6 +26,8 @@ public class Game extends JPanel implements KeyListener, Runnable {
         setFocusable(true);
         setPreferredSize(new Dimension(width, height));
         addKeyListener(this);
+
+        board = new GameBoard(width/2 - GameBoard.Board_width / 2,HEIGHT - GameBoard.Board_height - 10 );
     }
     public void update(){
         if(Keyboard.pressed[KeyEvent.VK_SPACE]){
@@ -33,12 +36,16 @@ public class Game extends JPanel implements KeyListener, Runnable {
             if(Keyboard.typed(KeyEvent.VK_RIGHT)){
                 System.out.println("hit right");
     }
+    board.update();
     Keyboard.update();
+
+
     }
     public void render(){
         Graphics2D g = (Graphics2D)image.getGraphics();
         g.setColor(Color.white);
         g.fillRect(0,0,width,height);
+        board.render(g);
         //tworzy plansze
         g.dispose();
 
@@ -113,7 +120,7 @@ public class Game extends JPanel implements KeyListener, Runnable {
         if(running) return;;
         running = true;
         //game  = new Thread(this,"game");
-        game.start();
+        start();
     }
     public synchronized void stop(){
         if(!running)return;
