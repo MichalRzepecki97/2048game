@@ -68,6 +68,7 @@ public class GameBoard {
             int col = location % COLS;
             Tile current = board[row][col];
             if (current == null){
+                //ekran początkowy dwie kostki 2 i 2 lub 4 i 2
                 int value = random.nextInt(10)< 9?2:4;
                 Tile tile = new Tile(value, getTileX(col),getTileY(row));
                 board[row][col] = tile;
@@ -114,21 +115,140 @@ public class GameBoard {
         }
     }
 
+    private boolean move(int row, int col, int horizontalDirection, int verticalDirection, Direction dir ) {
+        boolean canMovie = false;
+
+        Tile current = board[row][col];
+        if (current == null) return false;
+        boolean move = true;
+        int newCol = col;
+        int newRow = row;
+        while (move) {
+            newCol += horizontalDirection;
+            newRow += verticalDirection;
+            if (checkOutOfBounds(dir, newRow, newCol)) break;
+            if (board[newRow][newCol] == null) {
+                ;
+                board[newRow][newCol] = current;
+                board[newRow - verticalDirection][newCol - horizontalDirection] = null;
+                board[newRow][newCol].setSlideTo(new Point(newRow, newCol));
+            }
+        else if (board[newRow][newCol].getValue() ==current.getValue()&& board[newRow][newRow].CanCombine()) {
+                board[newRow][newCol].setCanCombine(false);
+                board[newRow][newCol].setValue(board[newRow][newCol].getValue() * 2);
+                canMovie = true;
+                board[newRow - verticalDirection][newCol - horizontalDirection] = null;
+                board[newRow][newCol].setSlideTo(new Point(newRow, newCol));
+            }
+                 //       board[newRow][newCol].setCombineAnimation(true);
+            //dodawanie do wyniku
+            else{
+                move = false;
+                }
+            }
+
+
+        return canMovie;
+    }
+    private boolean checkOutOfBounds(Direction dir, int row, int col){
+        if(dir ==Direction.LEFT){
+            return col < 0;
+        }
+        else  if (dir == Direction.RIGHT){
+            return col > COLS -1;
+        }
+        else if (dir == Direction.DOWN){
+            return row >ROWS -1 ;
+        }
+        else if (dir == Direction.UP){
+            return row >0;
+        }
+    return false;
+    }
+    private void moveTiles(Direction dir){
+        boolean canMove = false;
+        int horizontalDirection = 0;
+        int verticalDirection = 0;
+
+        if (dir == Direction.LEFT){
+            horizontalDirection = -1;
+            for (int row = 0; row< ROWS ; row++){
+                for (int col = 0; col <COLS ; col++) {
+                    if (!canMove){
+                        canMove = move(row,col,horizontalDirection,verticalDirection ,dir);
+                    }
+                    else move (row, col , horizontalDirection ,verticalDirection,dir);
+                }
+            }
+        }
+        else if (dir == Direction.RIGHT){
+            horizontalDirection = 1;
+            for (int row = 0; row< ROWS ; row++){
+                for (int col = COLS -1; col>=0; col--) {
+                    if (!canMove){
+                        canMove = move(row,col,horizontalDirection,verticalDirection ,dir);
+                    }
+                    else move (row, col , horizontalDirection ,verticalDirection,dir);
+                }
+            }
+        }
+        else if (dir == Direction.UP){
+            verticalDirection = -1;
+            for (int row = 0; row< ROWS ; row++){
+                for (int col = 0; col <COLS ; col++) {
+                    if (!canMove){
+                        canMove = move(row,col,horizontalDirection,verticalDirection ,dir);
+                    }
+                    else move (row, col , horizontalDirection ,verticalDirection,dir);
+                }
+            }
+        }
+        else if (dir == Direction.DOWN){
+            verticalDirection = 1;
+            for (int row = ROWS -1; row >= 0 ; row--){
+                for (int col = 0; col <COLS ; col++) {
+                    if (!canMove){
+                        canMove = move(row,col,horizontalDirection,verticalDirection ,dir);
+                    }
+                    else move (row, col , horizontalDirection ,verticalDirection,dir);
+                }
+            }
+        }
+        else{
+            System.out.println(dir+" Sory zły kierunek ruchu " );
+        }
+        for (int row = 0; row <ROWS ; row++) {
+            for (int col = 0; col <COLS ; col++) {
+                Tile current = board [row][col];
+                if(current == null )continue;
+                current.setCanCombine(true);
+            }
+        }
+        if (canMove){
+            spawnRandom();
+            //sprawdza koniec gry
+        }
+    }
+
     private void checkKeys() {
         if (Keyboard.typed(KeyEvent.VK_LEFT)) {
             //ruch w lewo
+            moveTiles(Direction.LEFT);
             if (!hasStarted) hasStarted = true;
         }
         if (Keyboard.typed(KeyEvent.VK_RIGHT)) {
             //ruch w prawo
+            moveTiles(Direction.RIGHT);
             if (!hasStarted) hasStarted = true;
         }
         if (Keyboard.typed(KeyEvent.VK_UP)) {
             //ruch do góry
+            moveTiles(Direction.UP);
             if (!hasStarted) hasStarted = true;
         }
         if (Keyboard.typed(KeyEvent.VK_DOWN)) {
             //ruch do dół
+            moveTiles(Direction.DOWN);
             if (!hasStarted) hasStarted = true;
         }
     }
