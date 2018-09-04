@@ -120,7 +120,7 @@ public class Game extends JPanel implements KeyListener, Runnable {
         if(running) return;;
         running = true;
         //game  = new Thread(this,"game");
-        start();
+         start();
     }
     public synchronized void stop(){
         if(!running)return;
