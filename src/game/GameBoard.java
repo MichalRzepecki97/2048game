@@ -168,15 +168,13 @@ private void resetPosition(Tile current , int row, int col) {
                 canMovie = true;
                 board[newRow - verticalDirection][newCol - horizontalDirection] = null;
                 board[newRow][newCol].setSlideTo(new Point(newRow, newCol));
+                board[newRow][newCol].setCombineAnimation(true);
             }
-            // board[newRow][newCol].setCombineAnimation(true);
             //dodawanie do wyniku
             else{
                 move = false;
                 }
             }
-
-
         return canMovie;
     }
     private boolean checkOutOfBounds(Direction dir, int row, int col){
